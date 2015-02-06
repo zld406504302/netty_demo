@@ -1,0 +1,49 @@
+package cn.huanju.netty.protobuf.protocol;
+
+/*
+ * 统一的银行需求
+ */
+message BankingRequest {
+
+	enum CommandType {
+		DEPOSIT  = 1;
+		WITHDRAW = 2;
+		TRANSFER = 3;
+	}
+
+	required CommandType type = 1;
+
+	optional Deposit deposit = 2;
+	optional Withdraw withdraw = 3;
+	optional Transfer transfer = 4;
+
+
+}
+
+/*
+ * 统一的银行响应
+ */
+message BankingResponse {
+	required uint32 id = 1; 	// 与响应对应的请求id, 以便在异步通讯下进行匹配
+	required uint32 errno = 2; 	// 错误码, 成功时错误码为0, 其他的则表示各种错误
+	required string error = 3;	// 错误描述信息, 当成功时此字段为null
+}
+
+message Deposit {
+	required uint32 id = 1;		// 请求的序号, 每个连接的序号是不重复的
+	required uint32 bankId = 2;	// 银行账号
+	required uint32 money = 3;	// 需要存款的金额(以分为单位)
+}
+
+message Withdraw {
+	required uint32 id = 1;		// 请求的序号, 每个连接的序号是不重复的
+	required uint32 bankId = 2;	// 银行账号
+	required uint32 money = 3;	// 需要取款的金额(以分为单位)
+}
+
+message Transfer {
+	required uint32 id = 1;			// 请求的序号, 每个连接的序号是不重复的
+	required uint32 fromBankId = 2;	// 转出银行账号
+	required uint32 toBankId = 3;	// 转入银行账号
+	required uint32 money = 4;		// 需要取款的金额(以分为单位)
+}
